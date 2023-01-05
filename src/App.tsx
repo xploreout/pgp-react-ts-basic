@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 
 import 'bootstrap/dist/css/bootstrap.min.css'
-import { Container, Button, Card, Alert } from 'react-bootstrap'
+import { Container, Card } from 'react-bootstrap'
 
 function App() {
   type UserType = {
@@ -9,17 +9,17 @@ function App() {
     age: number
     address: string
   }
-  const [user, setUser] = useState<UserType>({} as UserType)
+  const [user, setUser] = useState<UserType>({ name: '', age: 0, address: '' })
   const fetchData = async () => {
     const response = await fetch('https://randomuser.me/api/')
     const randomUser = await response.json()
-    const dataUser = randomUser.results[0]
+    const data = randomUser.results[0]
 
     setUser({
       ...user,
-      name: `${dataUser.name.first} ${dataUser.name.last}`,
-      age: dataUser.dob.age,
-      address: `${dataUser.location.street.number} ${dataUser.location.street.name}, ${dataUser.location.city}, ${dataUser.location.state}, ${dataUser.location.country}`,
+      name: `${data.name.first} ${data.name.last}`,
+      age: data.dob.age,
+      address: `${data.location.street.number} ${data.location.street.name}, ${data.location.city}, ${data.location.state}, ${data.location.country}`,
     })
   }
 
@@ -27,17 +27,13 @@ function App() {
     fetchData()
   }, [])
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
     setUser({
       ...user,
       [e.target.name]: e.target.value,
     })
   }
 
-  const handleClick = () => {
-    return console.log('onclick')
-     
-  }
   return (
     <>
       <Container>
@@ -46,7 +42,10 @@ function App() {
             className='col-sm-10 mt-lg-10'
             style={{ backgroundColor: 'pearl' }}
           >
-            <label style={{ paddingLeft: '20px' }}>Name: </label>
+            <div style={{ paddingLeft: '20px' }}>Name: {user.name}</div>
+            <div style={{ paddingLeft: '20px' }}>Age: {user.age}</div>
+            <div style={{ paddingLeft: '20px' }}>Address: {user.address}</div>
+            <label style={{ paddingLeft: '20px' }}>Update Name: </label>
             <input
               type='text'
               name='name'
@@ -54,13 +53,8 @@ function App() {
               onChange={handleChange}
               style={{ paddingLeft: '10px' }}
             ></input>
-            <div style={{ paddingLeft: '20px' }}>Age: {user.age}</div>
-            <div style={{ paddingLeft: '20px' }}>Address: {user.address}</div>
           </div>
         </Card>
-        <Button variant='success' onClick={handleClick}>
-          Update
-        </Button>
       </Container>
     </>
   )
